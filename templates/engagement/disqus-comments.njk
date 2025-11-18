@@ -1,0 +1,99 @@
+---
+title: "Disqus Comments"
+description: "Add a Disqus comment section to your notes for reader engagement and discussions"
+version: "1.0.0"
+author: "Forestry.md"
+category: "Engagement"
+defaultSlot: "notes-after-content"
+thumbnail: "https://c.disquscdn.com/next/assets/img/brand/disqus-social-icon-blue-white.svg"
+variables:
+  shortname:
+    type: string
+    default: ""
+    title: "Disqus Shortname"
+    description: "Your Disqus site shortname (found in Disqus admin under Settings > General)"
+  pageIdentifier:
+    type: string
+    default: "{{ page.url }}"
+    title: "Page Identifier"
+    description: "Unique identifier for the page. Leave default to use page URL"
+  pageTitle:
+    type: string
+    default: "{{ title }}"
+    title: "Page Title"
+    description: "Title shown in Disqus. Leave default to use note title"
+  showCommentCount:
+    type: boolean
+    default: false
+    title: "Show Comment Count"
+    description: "Display the number of comments above the section"
+  containerWidth:
+    type: select
+    default: "100%"
+    title: "Container Width"
+    description: "Width of the comments section"
+    options:
+      - "100%"
+      - "90%"
+      - "80%"
+      - "700px"
+  marginTop:
+    type: string
+    default: "3rem"
+    title: "Top Margin"
+    description: "Space above the comments section"
+---
+
+<div class="disqus-comments-container" style="width: {{ containerWidth }}; margin: {{ marginTop }} auto 0 auto;">
+  {% if showCommentCount %}
+  <div class="disqus-comment-count" style="margin-bottom: 1rem; font-size: 0.9rem; color: #666;">
+    <a href="#disqus_thread" data-disqus-identifier="{{ pageIdentifier }}">Comments</a>
+  </div>
+  {% endif %}
+
+  <div id="disqus_thread"></div>
+</div>
+
+<script>
+  var disqus_config = function () {
+    this.page.url = window.location.href;
+    this.page.identifier = '{{ pageIdentifier }}';
+    this.page.title = '{{ pageTitle }}';
+  };
+
+  (function() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://{{ shortname }}.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
+
+{% if showCommentCount %}
+<script id="dsq-count-scr" src="https://{{ shortname }}.disqus.com/count.js" async></script>
+{% endif %}
+
+<noscript>
+  <p style="text-align: center; padding: 2rem; background: #f5f5f5; border-radius: 8px;">
+    Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </p>
+</noscript>
+
+<style>
+.disqus-comments-container {
+  padding: 1rem 0;
+}
+
+#disqus_thread {
+  min-height: 200px;
+}
+
+.disqus-comment-count a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.disqus-comment-count a:hover {
+  text-decoration: underline;
+}
+</style>
