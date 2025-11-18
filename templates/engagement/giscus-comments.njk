@@ -1,0 +1,143 @@
+---
+title: "Giscus Comments"
+description: "Add a GitHub Discussions-powered comment section to your notes"
+version: "1.0.0"
+author: "Forestry.md"
+category: "Engagement"
+defaultSlot: "notes-after-content"
+thumbnail: "https://avatars.githubusercontent.com/in/106117"
+variables:
+  repo:
+    type: string
+    default: ""
+    title: "GitHub Repository"
+    description: "Repository in format owner/repo (e.g., username/my-garden)"
+  repoId:
+    type: string
+    default: ""
+    title: "Repository ID"
+    description: "Get this from giscus.app configuration tool"
+  category:
+    type: string
+    default: "Announcements"
+    title: "Discussion Category"
+    description: "GitHub Discussions category name"
+  categoryId:
+    type: string
+    default: ""
+    title: "Category ID"
+    description: "Get this from giscus.app configuration tool"
+  mapping:
+    type: select
+    default: "pathname"
+    title: "Page Mapping"
+    description: "How to map pages to discussions"
+    options:
+      - "pathname"
+      - "url"
+      - "title"
+      - "og:title"
+  theme:
+    type: select
+    default: "preferred_color_scheme"
+    title: "Theme"
+    description: "Color theme for the comments"
+    options:
+      - "preferred_color_scheme"
+      - "light"
+      - "dark"
+      - "dark_dimmed"
+      - "transparent_dark"
+      - "noborder_light"
+      - "noborder_dark"
+  reactionsEnabled:
+    type: boolean
+    default: true
+    title: "Enable Reactions"
+    description: "Allow reactions on the main post"
+  inputPosition:
+    type: select
+    default: "bottom"
+    title: "Input Position"
+    description: "Where to place the comment input box"
+    options:
+      - "top"
+      - "bottom"
+  lang:
+    type: select
+    default: "en"
+    title: "Language"
+    description: "Interface language"
+    options:
+      - "en"
+      - "es"
+      - "fr"
+      - "de"
+      - "it"
+      - "ja"
+      - "ko"
+      - "nl"
+      - "pl"
+      - "pt"
+      - "ro"
+      - "ru"
+      - "tr"
+      - "vi"
+      - "zh-CN"
+      - "zh-TW"
+  lazyLoad:
+    type: boolean
+    default: true
+    title: "Lazy Load"
+    description: "Load comments only when scrolled into view"
+  containerWidth:
+    type: select
+    default: "100%"
+    title: "Container Width"
+    description: "Width of the comments section"
+    options:
+      - "100%"
+      - "90%"
+      - "80%"
+      - "700px"
+  marginTop:
+    type: string
+    default: "3rem"
+    title: "Top Margin"
+    description: "Space above the comments section"
+---
+
+<div class="giscus-container" style="width: {{ containerWidth }}; margin: {{ marginTop }} auto 0 auto;">
+  <script src="https://giscus.app/client.js"
+    data-repo="{{ repo }}"
+    data-repo-id="{{ repoId }}"
+    data-category="{{ category }}"
+    data-category-id="{{ categoryId }}"
+    data-mapping="{{ mapping }}"
+    data-strict="0"
+    data-reactions-enabled="{% if reactionsEnabled %}1{% else %}0{% endif %}"
+    data-emit-metadata="0"
+    data-input-position="{{ inputPosition }}"
+    data-theme="{{ theme }}"
+    data-lang="{{ lang }}"
+    data-loading="{% if lazyLoad %}lazy{% else %}eager{% endif %}"
+    crossorigin="anonymous"
+    async>
+  </script>
+</div>
+
+<noscript>
+  <p style="text-align: center; padding: 2rem; background: #f5f5f5; border-radius: 8px;">
+    Please enable JavaScript to view the comments powered by <a href="https://giscus.app">Giscus</a>.
+  </p>
+</noscript>
+
+<style>
+.giscus-container {
+  padding: 1rem 0;
+}
+
+.giscus-container .giscus {
+  min-height: 200px;
+}
+</style>
