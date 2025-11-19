@@ -5,6 +5,7 @@ version: "1.0.0"
 author: "Forestry.md"
 category: "UI"
 defaultSlot: "header"
+thumbnail: "https://upload.wikimedia.org/wikipedia/commons/f/f1/Dice_simple_flat.svg"
 variables:
   position:
     type: select
@@ -64,7 +65,7 @@ variables:
 </button>
 
 <style>
-.random-note {
+button.random-note {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -73,30 +74,31 @@ variables:
     padding: 0;
     border: none;
     background: transparent;
+    box-shadow: none;
     color: {{ iconColor }};
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.theme-dark .random-note {
+.theme-dark button.random-note {
     color: {{ iconColorDark }};
 }
 
-.random-note:hover {
+button.random-note:hover {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.theme-dark .random-note:hover {
+.theme-dark button.random-note:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.random-note-bg {
+button.random-note.random-note-bg {
     background: {{ backgroundColor }};
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.theme-dark .random-note-bg {
+.theme-dark button.random-note.random-note-bg {
     background: {{ backgroundColorDark }};
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }

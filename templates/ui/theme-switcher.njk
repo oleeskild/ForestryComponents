@@ -4,6 +4,7 @@ description: "A simple theme toggle button that cycles between light, dark, and 
 version: "1.0.0"
 author: "Forestry.md"
 category: "UI"
+thumbnail: "https://extensions.gnome.org/extension-data/screenshots/screenshot_4968.png"
 defaultSlot: "header"
 variables:
   defaultTheme:
@@ -84,7 +85,7 @@ variables:
 </button>
 
 <style>
-.theme-switcher {
+button.theme-switcher {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -93,30 +94,31 @@ variables:
     padding: 0;
     border: none;
     background: transparent;
+    box-shadow: none;
     color: {{ iconColor }};
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.theme-dark .theme-switcher {
+.theme-dark button.theme-switcher {
     color: {{ iconColorDark }};
 }
 
-.theme-switcher:hover {
+button.theme-switcher:hover {
     background: rgba(0, 0, 0, 0.05);
 }
 
-.theme-dark .theme-switcher:hover {
+.theme-dark button.theme-switcher:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.theme-switcher-bg {
+button.theme-switcher.theme-switcher-bg {
     background: {{ backgroundColor }};
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.theme-dark .theme-switcher-bg {
+.theme-dark button.theme-switcher.theme-switcher-bg {
     background: {{ backgroundColorDark }};
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
