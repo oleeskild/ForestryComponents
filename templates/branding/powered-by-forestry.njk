@@ -1,0 +1,74 @@
+---
+title: "Powered by Forestry.md"
+description: "A small floating badge linking to Forestry.md. Automatically added to free gardens."
+version: "1.0.0"
+author: "Forestry.md"
+category: "Branding"
+defaultSlot: "footer"
+thumbnail: "https://forestry.md/favicon.png"
+---
+
+<a href="https://forestry.md" target="_blank" rel="noopener noreferrer" class="forestry-branding-badge forestry-fixed-ui" data-fixed-position="bottom-right" data-button-size="1.5">
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+        <path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+    </svg>
+    <span>Powered by Forestry.md</span>
+</a>
+
+<style>
+.forestry-branding-badge {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 999;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1;
+    text-decoration: none;
+    color: #666;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    opacity: 0.75;
+    transition: opacity 0.2s ease;
+}
+
+.forestry-branding-badge:hover {
+    opacity: 1;
+    text-decoration: none;
+    color: #444;
+}
+
+.theme-dark .forestry-branding-badge {
+    color: #aaa;
+    background: rgba(30, 30, 30, 0.9);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.theme-dark .forestry-branding-badge:hover {
+    color: #ccc;
+}
+</style>
+
+<script>
+(function() {
+    var badge = document.currentScript.previousElementSibling.previousElementSibling;
+    var siblings = document.querySelectorAll('.forestry-fixed-ui[data-fixed-position="bottom-right"]');
+    var offset = 1;
+
+    for (var i = 0; i < siblings.length; i++) {
+        if (siblings[i] === badge) break;
+        var size = parseFloat(siblings[i].dataset.buttonSize) || 2.5;
+        offset += size + 0.5;
+    }
+
+    if (offset > 1) {
+        badge.style.bottom = offset + 'rem';
+    }
+})();
+</script>
