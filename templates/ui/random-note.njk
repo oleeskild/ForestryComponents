@@ -1,7 +1,7 @@
 ---
 title: "Random Note"
-description: "A button that navigates to a random note from your site. Requires search to be enabled."
-version: "1.0.0"
+description: "A button that navigates to a random note from your site."
+version: "2.0.0"
 author: "Forestry.md"
 category: "UI"
 defaultSlot: "header"
@@ -155,37 +155,7 @@ button.random-note.random-note-bg {
     }
 
     btn.addEventListener('click', function() {
-        try {
-            const searchIndexRaw = window.localStorage.getItem('searchIndex');
-
-            if (!searchIndexRaw) {
-                console.warn('Random Note: searchIndex not found in localStorage. Make sure search is enabled on your site.');
-                alert('Search index not found. Please enable search on your site for this feature to work.');
-                return;
-            }
-
-            const searchIndex = JSON.parse(searchIndexRaw);
-
-            if (!searchIndex.docs || !Array.isArray(searchIndex.docs) || searchIndex.docs.length === 0) {
-                console.warn('Random Note: No documents found in searchIndex.');
-                alert('No notes found in search index.');
-                return;
-            }
-
-            const docs = searchIndex.docs;
-            const randomIndex = Math.floor(Math.random() * docs.length);
-            const randomDoc = docs[randomIndex];
-
-            if (randomDoc.url) {
-                window.location.href = randomDoc.url;
-            } else {
-                console.warn('Random Note: Selected document has no URL.');
-                alert('Could not find URL for the selected note.');
-            }
-        } catch (e) {
-            console.error('Random Note: Error reading search index', e);
-            alert('Error reading search index. Please check console for details.');
-        }
+        window.location.href = '/~random/';
     });
 })();
 </script>
