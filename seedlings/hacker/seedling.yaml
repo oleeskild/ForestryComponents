@@ -1,0 +1,30 @@
+name: "Hacker"
+description: "Terminal-inspired theme with monospace fonts and glowing green text."
+author: "Forestry.md"
+image: "preview.png"
+demoUrl: ""
+
+settings:
+  BASE_THEME: "dark"
+  THEME: ""
+  dgHomeLink: "true"
+  dgShowLocalGraph: "false"
+  dgShowBacklinks: "false"
+  dgShowToc: "true"
+  dgShowInlineTitle: "true"
+  dgShowFileTree: "false"
+  dgEnableSearch: "true"
+  dgLinkPreview: "false"
+  dgShowTags: "false"
+  SHOW_CREATED_TIMESTAMP: "false"
+  SHOW_UPDATED_TIMESTAMP: "false"
+
+styles:
+  - filename: "terminal-glow.scss"
+
+components:
+  - templateId: "ui-theme-switcher"
+    slot: "header"
+    variables:
+      iconColor: "#00ff41"
+      iconColorDark: "#00ff41"

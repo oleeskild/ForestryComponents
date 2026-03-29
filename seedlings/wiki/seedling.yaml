@@ -1,0 +1,28 @@
+name: "Wiki"
+description: "Full-featured knowledge base with navigation, graph view, and backlinks."
+author: "Forestry.md"
+image: "preview.png"
+demoUrl: ""
+
+settings:
+  BASE_THEME: "light"
+  THEME: ""
+  dgHomeLink: "true"
+  dgShowLocalGraph: "true"
+  dgShowBacklinks: "true"
+  dgShowToc: "true"
+  dgShowInlineTitle: "true"
+  dgShowFileTree: "true"
+  dgEnableSearch: "true"
+  dgLinkPreview: "true"
+  dgShowTags: "true"
+  SHOW_CREATED_TIMESTAMP: "false"
+  SHOW_UPDATED_TIMESTAMP: "true"
+  TIMESTAMP_FORMAT: "MMM dd, yyyy"
+
+components:
+  - templateId: "ui-theme-switcher"
+    slot: "header"
+    variables:
+      iconColor: "#333333"
+      iconColorDark: "#ffffff"

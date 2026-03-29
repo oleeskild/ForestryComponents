@@ -1,0 +1,27 @@
+name: "Minimal"
+description: "Clean, focused reading experience. No distractions — just your content."
+author: "Forestry.md"
+image: "preview.png"
+demoUrl: ""
+
+settings:
+  BASE_THEME: "dark"
+  THEME: ""
+  dgHomeLink: "true"
+  dgShowLocalGraph: "false"
+  dgShowBacklinks: "false"
+  dgShowToc: "false"
+  dgShowInlineTitle: "true"
+  dgShowFileTree: "false"
+  dgEnableSearch: "true"
+  dgLinkPreview: "false"
+  dgShowTags: "false"
+  SHOW_CREATED_TIMESTAMP: "false"
+  SHOW_UPDATED_TIMESTAMP: "false"
+
+components:
+  - templateId: "ui-theme-switcher"
+    slot: "header"
+    variables:
+      iconColor: "#ffffff"
+      iconColorDark: "#ffffff"

@@ -1,0 +1,57 @@
+:root {
+  --background-primary: #0a0a0a;
+  --background-secondary: #111111;
+  --text-normal: #00ff41;
+  --text-muted: #008f11;
+  --interactive-accent: #00ff41;
+  --link-color: #00ff41;
+  --link-color-hover: #33ff66;
+}
+
+body {
+  font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+}
+
+.content {
+  font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'Consolas', monospace;
+  color: #00ff41;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+}
+
+h1::before { content: "# "; opacity: 0.5; }
+h2::before { content: "## "; opacity: 0.5; }
+h3::before { content: "### "; opacity: 0.5; }
+
+a { text-decoration: none; border-bottom: 1px dashed #00ff41; }
+a:hover { text-shadow: 0 0 8px rgba(0, 255, 65, 0.5); }
+
+code { background: #111; border: 1px solid #00ff41; color: #00ff41; }
+pre { background: #0a0a0a !important; border: 1px solid #1a3a1a; }
+
+blockquote {
+  border-left: 3px solid #00ff41;
+  background: rgba(0, 255, 65, 0.03);
+  color: #008f11;
+}
+
+hr { border: none; border-top: 1px dashed #00ff41; opacity: 0.3; }
+
+.site-name-header::after {
+  content: "█";
+  animation: blink 1s step-end infinite;
+  color: #00ff41;
+  margin-left: 2px;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #1a3a1a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #00ff41; }

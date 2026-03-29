@@ -1,0 +1,30 @@
+name: "D&D"
+description: "Dark fantasy theme inspired by tabletop RPGs. Parchment textures and medieval styling."
+author: "Forestry.md"
+image: "preview.png"
+demoUrl: ""
+
+settings:
+  BASE_THEME: "dark"
+  THEME: ""
+  dgHomeLink: "true"
+  dgShowLocalGraph: "false"
+  dgShowBacklinks: "true"
+  dgShowToc: "true"
+  dgShowInlineTitle: "true"
+  dgShowFileTree: "true"
+  dgEnableSearch: "true"
+  dgLinkPreview: "false"
+  dgShowTags: "true"
+  SHOW_CREATED_TIMESTAMP: "false"
+  SHOW_UPDATED_TIMESTAMP: "false"
+
+styles:
+  - filename: "parchment.scss"
+
+components:
+  - templateId: "ui-theme-switcher"
+    slot: "header"
+    variables:
+      iconColor: "#c4a35a"
+      iconColorDark: "#c4a35a"
