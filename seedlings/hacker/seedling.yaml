@@ -6,7 +6,7 @@ demoUrl: ""
 
 settings:
   BASE_THEME: "dark"
-  THEME: ""
+  THEME: "https://raw.githubusercontent.com/zcysxy/Obsidian-Terminal-Theme/HEAD/theme.css"
   dgHomeLink: "true"
   dgShowLocalGraph: "false"
   dgShowBacklinks: "false"
