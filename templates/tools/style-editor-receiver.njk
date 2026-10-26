@@ -1,7 +1,7 @@
 ---
 title: "Style Editor Receiver"
 description: "Enables live CSS variable editing from the Forestry dashboard. Install this component to use the Style Editor feature."
-version: "1.2.0"
+version: "1.4.0"
 author: "Forestry.md"
 category: "Tools"
 defaultSlot: "head"
@@ -13,45 +13,196 @@ variables: {}
     // Only activate when loaded in an iframe
     if (window.parent === window) return;
 
-    var RECEIVER_VERSION = '1.2.0';
+    var RECEIVER_VERSION = '1.4.0';
+
+    // Only the Forestry dashboard (its preview deploys, and local development
+    // of it) may restyle the page. Gardens can be framed by anyone, so without
+    // this any site embedding one could rewrite how it looks.
+    function isTrustedOrigin(origin) {
+        return origin === 'https://dashboard.forestry.md' ||
+            /^https:\/\/[a-z0-9-]+\.forestry-dashboard-next\.pages\.dev$/.test(origin) ||
+            /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+    }
 
     // Create a style element for custom CSS injection
     var customStyleEl = document.createElement('style');
     customStyleEl.id = 'forestry-custom-css';
     document.head.appendChild(customStyleEl);
 
+    // Theme preview. The build bakes the garden's theme into
+    // /styles/_theme.<hash>.css next to obsidian-base.css, or links style.css
+    // when it has none, so previewing another theme means swapping those
+    // stylesheets. The links are looked up on first use: by then the whole
+    // head has been parsed, wherever this component sits in it.
+    var themeLinks = null;
+    var themePreviewEl = null;
+
+    function findStylesheet(pattern) {
+        var links = document.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i++) {
+            if (pattern.test(links[i].getAttribute('href') || '')) return links[i];
+        }
+        return null;
+    }
+
+    function getThemeLinks() {
+        if (themeLinks) return themeLinks;
+        var links = {
+            theme: findStylesheet(/\/styles\/_theme\.[^\/]*\.css/),
+            obsidianBase: findStylesheet(/\/styles\/obsidian-base\.css/),
+            defaultStyle: findStylesheet(/\/styles\/style\.css/),
+            gardenBase: findStylesheet(/\/styles\/digital-garden-base\.css/)
+        };
+        // Remember what the published page had switched on, for resetTheme.
+        links.original = {
+            theme: links.theme ? links.theme.disabled : null,
+            obsidianBase: links.obsidianBase ? links.obsidianBase.disabled : null,
+            defaultStyle: links.defaultStyle ? links.defaultStyle.disabled : null
+        };
+        themeLinks = links;
+        return links;
+    }
+
+    // Adds a stylesheet the published page never linked, just ahead of the
+    // garden base so the cascade order matches a real build.
+    function ensureStylesheet(links, key, href) {
+        if (!links[key]) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            link.setAttribute('data-forestry-theme-preview', '');
+            if (links.gardenBase) links.gardenBase.parentNode.insertBefore(link, links.gardenBase);
+            else document.head.appendChild(link);
+            links[key] = link;
+        }
+        links[key].disabled = false;
+        return links[key];
+    }
+
+    function setDisabled(link, disabled) {
+        if (link) link.disabled = disabled;
+    }
+
+    function previewTheme(css) {
+        var links = getThemeLinks();
+        setDisabled(links.theme, true);
+        if (css === null) {
+            // The built-in Digital Garden look.
+            setDisabled(links.obsidianBase, true);
+            ensureStylesheet(links, 'defaultStyle', '/styles/style.css');
+            if (themePreviewEl) themePreviewEl.textContent = '';
+            return;
+        }
+        setDisabled(links.defaultStyle, true);
+        var base = ensureStylesheet(links, 'obsidianBase', '/styles/obsidian-base.css');
+        if (!themePreviewEl) {
+            themePreviewEl = document.createElement('style');
+            themePreviewEl.id = 'forestry-theme-preview';
+        }
+        // Where the published theme would sit: straight after obsidian-base.
+        base.parentNode.insertBefore(themePreviewEl, base.nextSibling);
+        themePreviewEl.textContent = css;
+    }
+
+    function resetTheme() {
+        if (!themeLinks) return;
+        var original = themeLinks.original;
+        ['theme', 'obsidianBase', 'defaultStyle'].forEach(function(key) {
+            // A link we added ourselves was never on: original is null.
+            setDisabled(themeLinks[key], original[key] === null ? true : original[key]);
+        });
+        if (themePreviewEl) themePreviewEl.textContent = '';
+    }
+
+    // Light or dark preview. The build puts theme-<mode> on <body> and the
+    // matching color-scheme on <html>; both are remembered for resetBaseTheme.
+    var originalBase = null;
+
+    // The mode the page was built with, for the dashboard's light/dark switch.
+    // Unknown while the body has not been parsed yet.
+    function publishedBaseTheme() {
+        if (originalBase) return originalBase.mode;
+        if (!document.body) return undefined;
+        return document.body.classList.contains('theme-light') ? 'light' : 'dark';
+    }
+
+    function previewBaseTheme(mode) {
+        var body = document.body;
+        var html = document.documentElement;
+        if (!originalBase) {
+            originalBase = {
+                mode: body.classList.contains('theme-light') ? 'light' : 'dark',
+                colorScheme: html.style.colorScheme
+            };
+        }
+        if (mode !== 'light' && mode !== 'dark') mode = originalBase.mode;
+        body.classList.remove('theme-light', 'theme-dark');
+        body.classList.add('theme-' + mode);
+        html.style.colorScheme = mode === originalBase.mode ? originalBase.colorScheme : 'only ' + mode;
+    }
+
+    // Notify components that CSS has changed so they can reinitialize
+    function dispatchStyleChange(detail) {
+        document.dispatchEvent(new CustomEvent('forestry:css-changed', { detail: detail }));
+    }
+
     window.addEventListener('message', function(event) {
         var data = event.data;
         if (!data || !data.type) return;
+        if (!isTrustedOrigin(event.origin)) return;
 
         // Respond to ping with pong (for connection detection) - include version
+        // and the published light/dark mode, which needs the body to be parsed
         if (data.type === 'ping') {
-            window.parent.postMessage({ type: 'pong', version: RECEIVER_VERSION }, '*');
+            var origin = event.origin;
+            var pong = function() {
+                window.parent.postMessage({ type: 'pong', version: RECEIVER_VERSION, baseTheme: publishedBaseTheme() }, origin);
+            };
+            if (document.body) pong();
+            else document.addEventListener('DOMContentLoaded', pong, { once: true });
             return;
         }
 
         if (data.type === 'setCSS') {
             // Set a single CSS variable
             document.body.style.setProperty(data.variableName, data.value);
+            dispatchStyleChange({ type: 'set', variables: [data.variableName] });
         } else if (data.type === 'resetCSS') {
             // Remove a single CSS variable override
             document.body.style.removeProperty(data.variableName);
+            dispatchStyleChange({ type: 'reset', variables: [data.variableName] });
         } else if (data.type === 'bulkSetCSS') {
             // Apply multiple variables at once
             if (data.variables && typeof data.variables === 'object') {
                 Object.keys(data.variables).forEach(function(name) {
                     document.body.style.setProperty(name, data.variables[name]);
                 });
+                dispatchStyleChange({ type: 'bulkSet', variables: Object.keys(data.variables) });
             }
         } else if (data.type === 'resetAllCSS') {
             // Clear all inline style overrides
             document.body.removeAttribute('style');
+            dispatchStyleChange({ type: 'resetAll' });
         } else if (data.type === 'setCustomCSS') {
             // Inject arbitrary CSS into the custom style element
             customStyleEl.textContent = data.css || '';
+            dispatchStyleChange({ type: 'customCSS' });
         } else if (data.type === 'resetCustomCSS') {
             // Clear custom CSS
             customStyleEl.textContent = '';
+            dispatchStyleChange({ type: 'resetCustomCSS' });
+        } else if (data.type === 'setTheme') {
+            // Preview a theme: its CSS, or null for the default look
+            previewTheme(typeof data.css === 'string' ? data.css : null);
+            dispatchStyleChange({ type: 'theme' });
+        } else if (data.type === 'resetTheme') {
+            // Back to the theme the garden was published with
+            resetTheme();
+            dispatchStyleChange({ type: 'resetTheme' });
+        } else if (data.type === 'setBaseTheme') {
+            // Preview light or dark; anything else goes back to the published mode
+            previewBaseTheme(data.mode);
+            dispatchStyleChange({ type: 'baseTheme' });
         } else if (data.type === 'getComputedCSS') {
             // Return computed values for requested variables
             var computed = {};
@@ -77,7 +228,7 @@ variables: {}
 
     // Stop sending ready messages once we receive any message from parent
     window.addEventListener('message', function stopReady(event) {
-        if (event.data && event.data.type) {
+        if (event.data && event.data.type && isTrustedOrigin(event.origin)) {
             clearInterval(readyInterval);
             window.removeEventListener('message', stopReady);
         }
